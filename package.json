@@ -1,0 +1,39 @@
+{
+  "name": "multi.db",
+  "version": "1.0.0",
+  "description": "Lightweight multi database with change watcher support.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "dev": "tsc -w",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "database",
+    "json",
+    "db",
+    "watcher",
+    "eventemitter",
+    "multidb",
+    "multi.db",
+    "lightweight"
+  ],
+  "author": "black.dev1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adhammenesy/multi.db.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adhammenesy/multi.db/issues"
+  },
+  "homepage": "https://github.com/adhammenesy/multi.db#readme",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
