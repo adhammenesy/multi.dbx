@@ -1,5 +1,6 @@
 ```js
-const { JsonData, JsonWatcher } = require("multi.db");
+const { JsonData, JsonWatcher } = require("multi.dbx");
+import { JsonData, JsonWatcher } from "multi.dbx"
 ```
 
 ---
@@ -16,8 +17,9 @@ It comes with built-in **file watcher** support for listening to changes (`add`,
 
 ```bash
 npm install multi.db
-# or
 yarn add multi.db
+bun add multi.db
+```
 ````
 
 ---
@@ -25,7 +27,7 @@ yarn add multi.db
 ## 🚀 Basic Usage
 
 ```js
-const { JsonData } = require("multi.db");
+const { JsonData } = require("multi.dbx");
 
 // create instance
 const db = new JsonData();
@@ -54,7 +56,7 @@ db.clear();
 ## 👂 Using Watcher (Events)
 
 ```js
-const { JsonData, JsonWatcher } = require("multi.db");
+const { JsonData, JsonWatcher } = require("multi.dbx");
 
 const db = new JsonData();
 db.connect("database/pc.json");
@@ -126,7 +128,7 @@ watcher.start();
 ## ⚡ Practical Example
 
 ```js
-const { JsonData, JsonWatcher } = require("multi.db");
+const { JsonData, JsonWatcher } = require("multi.dbx");
 
 const db = new JsonData();
 db.connect("database/pc.json");
@@ -160,9 +162,9 @@ Database cleared
 
 ## 📄 Notes
 
-* **Local only**: Events are local with `EventEmitter`, no internet required.
-* If you edit the JSON file manually, the watcher will still detect the changes.
-* Best for bots, small projects, logging systems, or temporary data storage.
-* Not a replacement for full databases like MongoDB or PostgreSQL.
+- **Local only**: Events are local with `EventEmitter`, no internet required.
+- If you edit the JSON file manually, the watcher will still detect the changes.
+- Best for bots, small projects, logging systems, or temporary data storage.
+- Not a replacement for full databases like MongoDB or PostgreSQL.
 
 ---
