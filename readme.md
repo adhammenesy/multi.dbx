@@ -1,3 +1,7 @@
+[![npm version](https://img.shields.io/npm/v/multi.dbx.svg)](https://www.npmjs.com/package/multi.dbx)
+[![npm downloads](https://img.shields.io/npm/dm/multi.dbx.svg)](https://www.npmjs.com/package/multi.dbx)
+[![license](https://img.shields.io/github/license/adhammenesy/multi.dbx.svg)](https://github.com/adhammenesy/multi.dbx/blob/main/LICENSE)
+
 ```js
 const { JsonData, JsonWatcher } = require("multi.dbx");
 import { JsonData, JsonWatcher } from "multi.dbx"
