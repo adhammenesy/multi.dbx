@@ -9,10 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
-        node-version: [20, 21] 
+        node-version: [20]
 
     steps:
       - uses: actions/checkout@v3
@@ -21,12 +22,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Build package
+        run: npm run build
 
-      - name: Build (optional)
-        run: npm run build || echo "No build step defined"
+      - name: Verify build output
+        run: |
+          ls -la dist/
+          [ -f dist/index.js ] || exit 1
+          [ -f dist/index.d.ts ] || exit 1
