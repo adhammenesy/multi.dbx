@@ -1,6 +1,6 @@
 {
   "name": "multi.dbx",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "build": "tsc",
     "prepare": "npm run build",
     "dev": "tsc -w",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "docs": "typedoc --out docs src --theme default"
   },
   "keywords": [
     "database",
