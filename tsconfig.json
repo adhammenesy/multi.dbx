@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                          
+    "module": "CommonJS",                        
+    "declaration": true,                         
+    "outDir": "dist",                            
+    "rootDir": "db",                            
+    "strict": true,                              
+    "esModuleInterop": true,                     
+    "forceConsistentCasingInFileNames": true,    
+    "skipLibCheck": true,                        
+    "resolveJsonModule": true,                   
+    "moduleResolution": "node",                  
+    "allowJs": true,                             
+    "checkJs": true,                             
+    "sourceMap": true,   
+    "baseUrl": "./db",              
+    "paths": {
+      "@types/*": ["types/*"]
+    }
+  },
+  "include": ["db/**/*"],
+  "exclude": ["dist"]
+}
