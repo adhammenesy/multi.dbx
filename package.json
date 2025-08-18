@@ -1,6 +1,6 @@
 {
   "name": "multi.dbx",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,6 +28,9 @@
   },
   "bugs": {
     "url": "https://github.com/adhammenesy/multi.dbx/issues"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "homepage": "https://github.com/adhammenesy/multi.dbx#readme",
   "type": "commonjs",
