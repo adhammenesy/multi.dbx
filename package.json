@@ -1,6 +1,6 @@
 {
-  "name": "multi.db",
-  "version": "1.0.0",
+  "name": "multi.dbx",
+  "version": "1.0.1",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,12 +24,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adhammenesy/multi.db.git"
+    "url": "https://github.com/adhammenesy/multi.dbx.git"
   },
   "bugs": {
-    "url": "https://github.com/adhammenesy/multi.db/issues"
+    "url": "https://github.com/adhammenesy/multi.dbx/issues"
   },
-  "homepage": "https://github.com/adhammenesy/multi.db#readme",
+  "homepage": "https://github.com/adhammenesy/multi.dbx#readme",
   "type": "commonjs",
   "files": [
     "dist",
