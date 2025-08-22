@@ -14,7 +14,7 @@
 
 - ✅ Added **deep search** support in `get()` using key-value objects (like `findOne` in MongoDB)
   - Example: `db.get({ name: "Alice" })`
-  - Example: `db.get({ "users.Alice.name": "Alice" })`
+  - Example: `db.get("users.Alice.name")`
 - ✅ `get()` now **returns only the matched object**, not the entire database.
 - ✅ Improved type support with generics `<T>` for `get()` and `fetch()`.
 - ✅ Full support for nested paths in all database operations (`fetch`, `set`, `delete`, `push`, `math`).
