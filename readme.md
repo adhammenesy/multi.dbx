@@ -1,99 +1,161 @@
-[![npm version](https://img.shields.io/npm/v/multi.dbx.svg)](https://www.npmjs.com/package/multi.dbx)
-[![npm downloads](https://img.shields.io/npm/dm/multi.dbx.svg)](https://www.npmjs.com/package/multi.dbx)
-[![license](https://img.shields.io/github/license/adhammenesy/multi.dbx.svg)](https://github.com/adhammenesy/multi.dbx/blob/main/LICENSE)
-
-```js
-const { JsonData, JsonWatcher } = require("multi.dbx");
-import { JsonData, JsonWatcher } from "multi.dbx"
-```
+  ---
+    
+  [![npm version](https://img.shields.io/npm/v/multi.dbx.svg)](https://www.npmjs.com/package/multi.dbx)
+  [![npm downloads](https://img.shields.io/npm/dm/multi.dbx.svg)](https://www.npmjs.com/package/multi.dbx)
+  [![license](https://img.shields.io/github/license/adhammenesy/multi.dbx.svg)](https://github.com/adhammenesy/multi.dbx/blob/main/LICENSE)
+  [![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA?logo=discord&logoColor=white)](https://discord.gg/Epe2t7YWqq)
 
 ---
+
+## 📝 Changelog
+
+### v1.1.0
+**Major Update – Deep `get()` & Improved API**
+
+- ✅ Added **deep search** support in `get()` using key-value objects (like `findOne` in MongoDB)
+  - Example: `db.get({ name: "Alice" })`
+  - Example: `db.get({ "users.Alice.name": "Alice" })`
+- ✅ `get()` now **returns only the matched object**, not the entire database.
+- ✅ Improved type support with generics `<T>` for `get()` and `fetch()`.
+- ✅ Full support for nested paths in all database operations (`fetch`, `set`, `delete`, `push`, `math`).
+- ✅ `push()` now safely adds values to arrays and auto-creates arrays if missing.
+- ✅ `math()` allows basic arithmetic operations (`+`, `-`, `*`, `/`, `%`) on numeric keys.
+- ✅ `reset()` clears the database completely.
+- ✅ Event watcher (`JsonWatcher`) supports all events: `add`, `update`, `remove`, `change`, `clear`, `error`.
+- ✅ Better internal handling of nested objects and paths.
+- ✅ Updated TypeScript typings and improved JSDoc documentation.
+
+**Previous Version Highlights:**
+
+- Basic CRUD operations (`get`, `set`, `delete`, `fetchAll`)  
+- Local JSON database support  
+- Event-driven file watcher
+
+---
+
+
+
 
 ````markdown
 # JsonDB 📂
 
 **JsonDB** is a lightweight JSON database wrapper that works like a mini NoSQL database.  
-It comes with built-in **file watcher** support for listening to changes (`add`, `update`, `remove`, `clear`).
+It comes with built-in **file watcher** support for listening to changes (`add`, `update`, `remove`, `clear`), and advanced `get()` filtering using key-value objects, similar to `findOne` in MongoDB.
 
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install multi.db
-yarn add multi.db
-bun add multi.db
-```
+npm install multi.dbx
+yarn add multi.dbx
+bun add multi.dbx
 ````
 
 ---
 
 ## 🚀 Basic Usage
 
-```js
-const { JsonData } = require("multi.dbx");
+```ts
+import { JsonData } from "multi.dbx";
 
-// create instance
 const db = new JsonData();
 
-// connect to a JSON file
+// Connect to a JSON file
 db.connect("database/pc.json");
 
-// set a value
+// Set a key
 db.set("user1", { name: "Black", points: 100 });
 
-// get value
-console.log(db.get("user1"));
+// Fetch by key/path
+console.log(db.fetch("user1")); 
+// Output: { name: "Black", points: 100 }
 
-// get all
+// Fetch all data
 console.log(db.fetchAll());
 
-// delete key
+// Delete a key
 db.delete("user1");
 
-// clear all
-db.clear();
+// Clear all data
+db.reset();
 ```
+
+---
+
+## 🔎 Using `get()` with Object Filters
+
+The new `get()` supports searching nested objects using key-value filters:
+
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+const db = new JsonData();
+db.connect("database/pc.json");
+
+const data = {
+  users: {
+    users: [
+      { name: "Alice", age: 25 },
+      { name: "Bob", age: 30 },
+    ],
+    Alice: { name: "Alice", age: 25 },
+    Bob: { name: "Bob", age: 30 }
+  }
+};
+
+db.set("users", data.users);
+
+// Search by simple key-value
+const alice = db.get<User>({ name: "Alice" });
+console.log(alice);
+// Output: { name: "Alice", age: 25 }
+
+// Search by nested path
+const aliceNested = db.get<User>({ "users.Alice.name": "Alice" });
+console.log(aliceNested);
+// Output: { name: "Alice", age: 25 }
+```
+
+`get()` returns **only the matched object**, not the parent object.
 
 ---
 
 ## 👂 Using Watcher (Events)
 
-```js
-const { JsonData, JsonWatcher } = require("multi.dbx");
+```ts
+import { JsonData, JsonWatcher } from "multi.dbx";
 
 const db = new JsonData();
 db.connect("database/pc.json");
 
 const watcher = new JsonWatcher(db);
 
-// listen to any change
-watcher.on("change", (evt) => {
-  console.log("Database changed:", evt);
-});
+watcher.on("change", (evt) => console.log("Database changed:", evt));
+watcher.on("add", (evt) => console.log("Added keys:", evt.diff?.added));
+watcher.on("update", (evt) => console.log("Updated keys:", evt.diff?.updated));
+watcher.on("remove", (evt) => console.log("Removed keys:", evt.diff?.removed));
+watcher.on("clear", () => console.log("Database cleared"));
 
-// listen to add
-watcher.on("add", (evt) => {
-  console.log("Added keys:", evt.diff?.added);
-});
-
-// listen to update
-watcher.on("update", (evt) => {
-  console.log("Updated keys:", evt.diff?.updated);
-});
-
-// listen to remove
-watcher.on("remove", (evt) => {
-  console.log("Removed keys:", evt.diff?.removed);
-});
-
-// listen to clear
-watcher.on("clear", () => {
-  console.log("Database cleared");
-});
-
-// start watching
 watcher.start();
+
+db.set("user1", { name: "Ali", points: 50 });
+db.set("user2", { name: "Mona", points: 75 });
+db.set("user1", { name: "Ali", points: 100 }); // update
+db.delete("user2"); // remove
+db.reset(); // clear
+```
+
+**Events Output Example:**
+
+```
+Added keys: [ "user1", "user2" ]
+Updated keys: [ "user1" ]
+Removed keys: [ "user2" ]
+Database cleared
 ```
 
 ---
@@ -102,19 +164,19 @@ watcher.start();
 
 ### **JsonData**
 
-| Method            | Description                                      |
-| ----------------- | ------------------------------------------------ |
-| `connect(path)`   | Connect to a JSON file (creates it if not found) |
-| `details()`       | Returns database details (path, connected)       |
-| `fetchAll()`      | Returns all data as an object                    |
-| `get(key)`        | Returns a specific key value                     |
-| `set(key, value)` | Add or update a key with value                   |
-| `delete(key)`     | Remove a key                                     |
-| `clear()`         | Clear all data                                   |
-| `has(key)`        | Check if key exists                              |
-| `reset()`         | Force reset (truncate JSON file)                 |
-
----
+| Method               | Description                                              |
+| -------------------- | -------------------------------------------------------- |
+| `connect(path)`      | Connect to a JSON file (throws if file not found)        |
+| `details()`          | Returns database details (path, connected, line count)   |
+| `fetch(key)`         | Returns value at a key/path                              |
+| `fetchAll()`         | Returns all data as an object                            |
+| `get(filter)`        | Search for an object by key-value filter (deep search)   |
+| `set(key, value)`    | Add or update a key                                      |
+| `delete(key)`        | Delete a key                                             |
+| `reset()`            | Clear all data                                           |
+| `has(key)`           | Check if key exists                                      |
+| `push(key, value)`   | Push a value into an array (creates array if not exists) |
+| `math(key, op, val)` | Perform math operations on numeric keys                  |
 
 ### **JsonWatcher (extends EventEmitter)**
 
@@ -129,46 +191,40 @@ watcher.start();
 
 ---
 
-## ⚡ Practical Example
+## 📄 Notes
 
-```js
-const { JsonData, JsonWatcher } = require("multi.dbx");
+* **Local only**: Events are emitted locally using `EventEmitter`.
+* Supports **deep search** with `get()` for nested objects.
+* Ideal for **small projects, bots, logging, or temporary storage**.
+* Not a replacement for full databases like MongoDB or PostgreSQL.
+
+---
+
+## ⚡ Example Use Case
+
+```ts
+import { JsonData } from "multi.dbx";
 
 const db = new JsonData();
 db.connect("database/pc.json");
 
-const watcher = new JsonWatcher(db);
-
-watcher.on("change", (e) => {
-  console.log("Changed:", e);
+// Add users
+db.set("users", {
+  users: [
+    { name: "Alice", age: 25 },
+    { name: "Bob", age: 30 }
+  ],
+  Alice: { name: "Alice", age: 25 },
+  Bob: { name: "Bob", age: 30 }
 });
 
-watcher.start();
+// Find a specific user
+const alice = db.get({ name: "Alice" });
+console.log(alice); 
+// { name: "Alice", age: 25 }
 
-db.set("user1", { name: "Ali", points: 50 });
-db.set("user2", { name: "Mona", points: 75 });
-
-db.set("user1", { name: "Ali", points: 100 }); // update
-db.delete("user2"); // remove
-db.clear(); // clear
+const nestedAlice = db.get({ "users.Alice.name": "Alice" });
+console.log(nestedAlice); 
+// { name: "Alice", age: 25 }
 ```
 
-Events output:
-
-```
-Added keys: [ "user1", "user2" ]
-Updated keys: [ "user1" ]
-Removed keys: [ "user2" ]
-Database cleared
-```
-
----
-
-## 📄 Notes
-
-- **Local only**: Events are local with `EventEmitter`, no internet required.
-- If you edit the JSON file manually, the watcher will still detect the changes.
-- Best for bots, small projects, logging systems, or temporary data storage.
-- Not a replacement for full databases like MongoDB or PostgreSQL.
-
----

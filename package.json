@@ -1,6 +1,6 @@
 {
   "name": "multi.dbx",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,8 +17,8 @@
     "db",
     "watcher",
     "eventemitter",
-    "multidb",
-    "multi.db",
+    "multidbx",
+    "multi.dbx",
     "lightweight"
   ],
   "author": "black.dev1",

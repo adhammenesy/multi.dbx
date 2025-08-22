@@ -71,46 +71,36 @@ class JsonWatcher extends node_events_1.EventEmitter {
                         removed.push(key);
                     }
                 }
-                if (added.length || updated.length || removed.length) {
+                if (added.length || updated.length || removed.length || (Object.keys(current).length === 0 && Object.keys(prev).length > 0)) {
                     const evt = {
                         type: "change",
                         data: current,
                         diff: { added, updated, removed },
                     };
                     this.emit("change", evt);
-                    if (added.length) {
+                    if (added.length)
                         this.emit("add", { type: "add", data: current, diff: { added } });
-                    }
-                    if (updated.length) {
-                        this.emit("update", {
-                            type: "update",
-                            data: current,
-                            diff: { updated },
-                        });
-                    }
-                    if (removed.length) {
-                        this.emit("remove", {
-                            type: "remove",
-                            data: current,
-                            diff: { removed },
-                        });
-                    }
-                    if (Object.keys(current).length === 0 &&
-                        Object.keys(prev).length > 0) {
+                    if (updated.length)
+                        this.emit("update", { type: "update", data: current, diff: { updated } });
+                    if (removed.length)
+                        this.emit("remove", { type: "remove", data: current, diff: { removed } });
+                    if (Object.keys(current).length === 0 && Object.keys(prev).length > 0)
                         this.emit("clear", { type: "clear", data: current });
-                    }
                     this.lastSnapshot = current;
                 }
             }
             catch (err) {
-                const evt = {
-                    type: "error",
-                    message: "Failed to read database",
-                    error: err,
-                };
+                const evt = { type: "error", message: "Failed to read database", error: err };
                 this.emit("error", evt);
             }
         });
+    }
+    // Type-safe on method
+    on(event, listener) {
+        return super.on(event, listener);
+    }
+    once(event, listener) {
+        return super.once(event, listener);
     }
 }
 exports.default = JsonWatcher;
