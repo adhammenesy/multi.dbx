@@ -32,7 +32,6 @@ jobs:
           [ -f dist/index.js ] || exit 1
           [ -f dist/index.d.ts ] || exit 1
 
-      # ✅ هنا الجزء الجديد للنشر
       - name: Publish to npm
         if: github.event_name == 'release' 
         run: npm publish --access public
