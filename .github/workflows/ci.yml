@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org/' 
+          always-auth: true   
       
       - name: Install dependencies
         run: npm ci
@@ -31,10 +32,10 @@ jobs:
         run: |
           ls -la dist/ || exit 1
           [ -f dist/index.js ] || { echo "❌ dist/index.js missing"; exit 1; }
-          # dist/index.d.ts is optional (only if TS exists)
           if [ -f dist/index.d.ts ]; then echo "✅ Types found"; else echo "ℹ️ No types found, skipping"; fi
 
       - name: Publish to npm
+        if: github.event_name == 'release'  
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
