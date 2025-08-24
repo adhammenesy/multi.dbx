@@ -1,40 +1,22 @@
-name: CI / Test & Build
+name: CI / Test & Publish
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-  release:
-    types: [created]  
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
         with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org/' 
-          always-auth: true   
-      
-      - name: Install dependencies
-        run: npm ci
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
 
-      - name: Build package
-        run: npm run build
+      - run: npm install
 
-      - name: Verify build output (optional files allowed)
-        run: |
-          ls -la dist/ || exit 1
-          [ -f dist/index.js ] || { echo "❌ dist/index.js missing"; exit 1; }
-          if [ -f dist/index.d.ts ]; then echo "✅ Types found"; else echo "ℹ️ No types found, skipping"; fi
-
-      - name: Publish to npm
-        run: npm publish --access public
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
