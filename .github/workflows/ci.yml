@@ -35,7 +35,6 @@ jobs:
           if [ -f dist/index.d.ts ]; then echo "✅ Types found"; else echo "ℹ️ No types found, skipping"; fi
 
       - name: Publish to npm
-        if: github.event_name == 'release'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
