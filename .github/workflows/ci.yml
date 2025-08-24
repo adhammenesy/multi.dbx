@@ -42,3 +42,6 @@ jobs:
           ls -la dist/
           [ -f dist/index.js ] || exit 1
           [ -f dist/index.d.ts ] || exit 1
+
+      - name: Run main file
+        run: node dist/index.js
