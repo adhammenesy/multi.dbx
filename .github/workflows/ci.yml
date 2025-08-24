@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  release:
+    types: [created]  
 
 jobs:
   build:
@@ -17,31 +19,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          
-      - name: Verify project structure
-        run: |
-          if [ ! -d db ] && [ ! -f *.ts ]; then
-            echo "Creating db folder with sample file"
-            mkdir db
-            touch db/index.ts
-            echo "console.log('Hello from multi.dbx');" > db/index.ts
-          elif [ -d db ] && [ ! -f db/*.ts ]; then
-            echo "Creating sample TypeScript file in db folder"
-            touch db/index.ts
-            echo "console.log('Hello from multi.dbx');" > db/index.ts
-          fi
-          
+          registry-url: 'https://registry.npmjs.org/' 
       - name: Install dependencies
         run: npm ci
-          
+
       - name: Build package
         run: npm run build
-        
+
       - name: Verify build output
         run: |
           ls -la dist/
           [ -f dist/index.js ] || exit 1
           [ -f dist/index.d.ts ] || exit 1
 
-      - name: Run main file
-        run: node dist/index.js
+      # ✅ هنا الجزء الجديد للنشر
+      - name: Publish to npm
+        if: github.event_name == 'release' 
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
