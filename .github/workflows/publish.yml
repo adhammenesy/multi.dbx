@@ -2,36 +2,29 @@ name: CI / Release & Publish
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*'  
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org/'
 
       - run: npm install
 
-      - name: Push changes and tags
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git push https://x-access-token:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git --follow-tags
-
       - name: Create GitHub Release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
 
       - run: npm publish --access public
         env:
