@@ -1,4 +1,4 @@
-name: CI / Test & Publish
+name: CI / Release & Publish
 
 on:
   push:
@@ -16,6 +16,20 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
 
       - run: npm install
+
+      - run: git push --follow-tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
       - run: npm publish --access public
         env:
