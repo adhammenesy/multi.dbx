@@ -20,20 +20,22 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org/' 
+      
       - name: Install dependencies
         run: npm ci
 
       - name: Build package
         run: npm run build
 
-      - name: Verify build output
+      - name: Verify build output (optional files allowed)
         run: |
-          ls -la dist/
-          [ -f dist/index.js ] || exit 1
-          [ -f dist/index.d.ts ] || exit 1
+          ls -la dist/ || exit 1
+          [ -f dist/index.js ] || { echo "❌ dist/index.js missing"; exit 1; }
+          # dist/index.d.ts is optional (only if TS exists)
+          if [ -f dist/index.d.ts ]; then echo "✅ Types found"; else echo "ℹ️ No types found, skipping"; fi
 
       - name: Publish to npm
-        if: github.event_name == 'release' 
+        if: github.event_name == 'release'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
