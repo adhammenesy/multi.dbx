@@ -8,6 +8,10 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:   # 👈 أضف الجزء ده
+      contents: write
+      id-token: write
+
     steps:
       - uses: actions/checkout@v3
 
@@ -30,4 +34,3 @@ jobs:
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
