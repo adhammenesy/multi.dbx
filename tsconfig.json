@@ -4,7 +4,7 @@
     "module": "CommonJS",
     "declaration": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "db", 
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,8 +14,10 @@
     "allowJs": true,
     "declarationMap": true,
     "checkJs": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "db",  
+
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts"], 
   "exclude": ["dist", "node_modules"]
 }

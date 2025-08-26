@@ -2,11 +2,11 @@
   "name": "multi.dbx",
   "version": "1.2.0",
   "description": "Lightweight multi database with change watcher support.",
-  "main": "dist/db/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "node dist/index.js",
-    "prepare": "npm run build",
+    "prepare": "echo 'skip build on publish'",
     "prepublishOnly": "npm test"
   },
   "keywords": [
