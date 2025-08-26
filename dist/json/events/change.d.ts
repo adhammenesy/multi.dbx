@@ -7,3 +7,4 @@ export interface ChangeEvent<T = any> {
         removed?: string[];
     };
 }
+//# sourceMappingURL=change.d.ts.map

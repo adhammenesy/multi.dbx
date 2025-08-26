@@ -3,11 +3,11 @@
   "version": "1.1.6",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-    "scripts": {
-    "build": "echo 'no build step'",
+  "scripts": {
+    "build": "tsc",
     "test": "node dist/index.js",
-    "prepare": "echo 'no build step'"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "database",
@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/adhammenesy/multi.dbx/issues"
   },
-  "homepage": "https://github.com/adhammenesy/multi.dbx#readme",
+  "homepage": "https://multidbx.vercel.app/docs",
   "type": "commonjs",
   "publishConfig": {
     "provenance": true
@@ -37,5 +37,8 @@
     "dist",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "dependencies": {
+    "ajv": "^8.17.1"
+  }
 }

@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:   # 👈 أضف الجزء ده
+    permissions: 
       contents: write
       id-token: write
 

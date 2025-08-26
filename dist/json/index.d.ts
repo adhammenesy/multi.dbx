@@ -1,3 +1,4 @@
+import { DbDetails } from "../types/jsonDb";
 /**
  * Represents a simple JSON-based database.
  */
@@ -84,3 +85,4 @@ export default class JsonData {
     private setNested;
     private deleteNested;
 }
+//# sourceMappingURL=index.d.ts.map

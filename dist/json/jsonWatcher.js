@@ -40,38 +40,62 @@ class JsonWatcher extends node_events_1.EventEmitter {
         super();
         this.db = db;
         this.lastSnapshot = {};
+        this.readyPromise = this.initSnapshot();
+    }
+    /** تنتظر snapshot الأولية */
+    async waitReady() {
+        await this.readyPromise;
+    }
+    /** تهيئة snapshot أولية */
+    async initSnapshot() {
         try {
-            this.lastSnapshot = this.db.fetchAll();
+            const result = this.db.fetchAll?.() || this.db.get?.();
+            this.lastSnapshot = result instanceof Promise ? await result : result || {};
         }
         catch {
             this.lastSnapshot = {};
         }
     }
+    /** جلب البيانات الحالية من الـDB */
+    async fetchCurrent() {
+        try {
+            const result = this.db.fetchAll?.() || this.db.get?.();
+            return result instanceof Promise ? await result : result || {};
+        }
+        catch {
+            return {};
+        }
+    }
+    /** بدء المراقبة */
     start() {
-        const path = this.db.details().path;
-        fs.watchFile(path, { interval: 300 }, () => {
+        let path;
+        if (typeof this.db.details === "function") {
+            path = this.db.details().path;
+        }
+        else if ("path" in this.db) {
+            path = this.db.path;
+        }
+        else {
+            throw new TypeError("Database object must have either a 'details()' method or a 'path' property");
+        }
+        fs.watchFile(path, { interval: 300 }, async () => {
             try {
-                const current = this.db.fetchAll();
+                const current = await this.fetchCurrent();
                 const prev = this.lastSnapshot;
                 const added = [];
                 const updated = [];
                 const removed = [];
-                // detect added + updated
                 for (const key of Object.keys(current)) {
-                    if (!(key in prev)) {
+                    if (!(key in prev))
                         added.push(key);
-                    }
-                    else if (JSON.stringify(current[key]) !== JSON.stringify(prev[key])) {
+                    else if (JSON.stringify(current[key]) !== JSON.stringify(prev[key]))
                         updated.push(key);
-                    }
                 }
-                // detect removed
                 for (const key of Object.keys(prev)) {
-                    if (!(key in current)) {
+                    if (!(key in current))
                         removed.push(key);
-                    }
                 }
-                if (added.length || updated.length || removed.length || (Object.keys(current).length === 0 && Object.keys(prev).length > 0)) {
+                if (added.length || updated.length || removed.length) {
                     const evt = {
                         type: "change",
                         data: current,
@@ -84,8 +108,10 @@ class JsonWatcher extends node_events_1.EventEmitter {
                         this.emit("update", { type: "update", data: current, diff: { updated } });
                     if (removed.length)
                         this.emit("remove", { type: "remove", data: current, diff: { removed } });
-                    if (Object.keys(current).length === 0 && Object.keys(prev).length > 0)
-                        this.emit("clear", { type: "clear", data: current });
+                    this.lastSnapshot = current;
+                }
+                else if (Object.keys(current).length === 0 && Object.keys(prev).length > 0) {
+                    this.emit("clear", { type: "clear", data: current });
                     this.lastSnapshot = current;
                 }
             }
@@ -95,7 +121,6 @@ class JsonWatcher extends node_events_1.EventEmitter {
             }
         });
     }
-    // Type-safe on method
     on(event, listener) {
         return super.on(event, listener);
     }

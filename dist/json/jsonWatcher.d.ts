@@ -1,20 +1,19 @@
 import { EventEmitter } from "node:events";
-import JsonData from "./index";
-import { ChangeEvent, ErrorEvent } from "./events";
-interface JsonWatcherEvents {
-    change: (evt: ChangeEvent) => void;
-    error: (evt: ErrorEvent) => void;
-    add: (evt: ChangeEvent) => void;
-    update: (evt: ChangeEvent) => void;
-    remove: (evt: ChangeEvent) => void;
-    clear: (evt: ChangeEvent) => void;
-}
+import { JsonWatcherEvents } from "../types/jsonDb";
 export default class JsonWatcher extends EventEmitter {
     private db;
     private lastSnapshot;
-    constructor(db: JsonData);
+    private readyPromise;
+    constructor(db: any);
+    /** تنتظر snapshot الأولية */
+    waitReady(): Promise<void>;
+    /** تهيئة snapshot أولية */
+    private initSnapshot;
+    /** جلب البيانات الحالية من الـDB */
+    private fetchCurrent;
+    /** بدء المراقبة */
     start(): void;
     on<K extends keyof JsonWatcherEvents>(event: K, listener: JsonWatcherEvents[K]): this;
     once<K extends keyof JsonWatcherEvents>(event: K, listener: JsonWatcherEvents[K]): this;
 }
-export {};
+//# sourceMappingURL=jsonWatcher.d.ts.map

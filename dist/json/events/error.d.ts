@@ -3,3 +3,4 @@ export interface ErrorEvent {
     message: string;
     error?: unknown;
 }
+//# sourceMappingURL=error.d.ts.map

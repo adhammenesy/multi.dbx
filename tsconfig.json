@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "allowJs": true,
+    "declarationMap": true,
     "checkJs": true,
     "sourceMap": true,
     "baseUrl": "db",  
