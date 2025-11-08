@@ -1,5 +1,5 @@
 import { EventEmitter } from "node:events";
-import { JsonWatcherEvents } from "../../types/jsonDb";
+import { JsonWatcherEvents } from "../types/jsonDb";
 export default class JsonWatcher extends EventEmitter {
     private db;
     private lastSnapshot;

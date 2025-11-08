@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import { AdvancedSchemaOptions, Def, SchemaDefinition } from "../../../types/Schema";
+import { AdvancedSchemaOptions, Def, SchemaDefinition } from "../../types/Schema";
 /**
  * AdvancedSchema - JSON Schema handler with validation and persistence
  */

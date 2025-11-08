@@ -1,4 +1,4 @@
-import { AutoHasPluginConfig } from "../../types/plugins";
+import { AutoHasPluginConfig } from "../types/plugins";
 export default class AutoHash {
     private config;
     constructor();

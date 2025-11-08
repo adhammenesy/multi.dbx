@@ -240,9 +240,7 @@ class AdvancedSchema {
         const filename = (0, path_1.basename)(this.path).replace(".json", ".csv");
         const rawData = await promises_1.default.readFile(this.path, "utf-8");
         const db = JSON.parse(rawData);
-        // ناخد القيم بس بدون الـ keys
         const dataArray = Object.values(db);
-        // لو ExcellFile محتاج array من objects
         (0, csv_1.ExcellFile)(filename, dataArray);
     }
 }

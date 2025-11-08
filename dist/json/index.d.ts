@@ -1,4 +1,4 @@
-import { DbDetails } from "../../types/jsonDb";
+import { DbDetails } from "../types/jsonDb";
 /**
  * Represents a simple JSON-based database.
  */

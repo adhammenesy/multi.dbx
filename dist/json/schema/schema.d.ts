@@ -1,5 +1,5 @@
 import AdvancedSchema from "./advanced";
-import { SchemaDefinition } from "../../../types/Schema";
+import { SchemaDefinition } from "../../types/Schema";
 /**
  * Class representing a schema for JSON data, similar to Mongoose schema.
  * Extends AdvancedSchema for type validation, defaults, and saving.
