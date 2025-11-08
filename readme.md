@@ -23,7 +23,7 @@ yarn add multi.dbx
 # or
 bun add multi.dbx
 ```
-
+ 
 ---
 
 ## 📝 Changelog
