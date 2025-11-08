@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const node_fs_1 = __importDefault(require("node:fs"));
 const node_path_1 = __importDefault(require("node:path"));
 const advanced_1 = __importDefault(require("./advanced"));
+// type MultiString = "string"
+// type MultiArray = "array"
 /**
  * Class representing a schema for JSON data, similar to Mongoose schema.
  * Extends AdvancedSchema for type validation, defaults, and saving.
@@ -13,7 +15,7 @@ const advanced_1 = __importDefault(require("./advanced"));
 class Schema extends advanced_1.default {
     /**
      * Create a new Schema instance.
-     * @param {SchemaDefinition} object - The schema definition.
+     * @param {T} object - The schema definition.
      * @param {string} schemaPath - Path to the JSON file.
      */
     constructor(object, schemaPath) {
@@ -30,6 +32,8 @@ class Schema extends advanced_1.default {
      * Creates them if they don't exist.
      */
     ensurePathExists() {
+        if (!this.path.endsWith(".json"))
+            this.path = this.path + ".json";
         const dir = node_path_1.default.dirname(this.Path);
         if (!node_fs_1.default.existsSync(dir))
             node_fs_1.default.mkdirSync(dir, { recursive: true });

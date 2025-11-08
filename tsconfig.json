@@ -15,9 +15,8 @@
     "declarationMap": true,
     "checkJs": true,
     "sourceMap": true,
-    "baseUrl": "db",  
-
+    "baseUrl": "db"
   },
   "include": ["**/*.ts"], 
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules", "types"]
 }

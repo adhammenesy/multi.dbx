@@ -5,6 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const promises_1 = __importDefault(require("fs/promises"));
 const ajv_1 = __importDefault(require("ajv"));
+const path_1 = require("path");
+const plugins_1 = require("../../plugins");
+const csv_1 = require("../../json/csv");
 /**
  * AdvancedSchema - JSON Schema handler with validation and persistence
  */
@@ -75,17 +78,28 @@ class AdvancedSchema {
             await promises_1.default.access(this.path);
         }
         catch {
-            await promises_1.default.writeFile(this.path, JSON.stringify({ $schema: "https://json-schema.org/draft/2020-12/schema" }, null, 2));
+            await promises_1.default.writeFile(this.path, JSON.stringify({}, null, 2));
         }
     }
     /**
-     * Create a new entry in the database
-     * @param {Record<string, any>} data Input object to validate and save
-     * @returns {Promise<{ data: Record<string, any> }>} Created entry
-     * @throws {TypeError} If validation fails
-     */
+    * Create a new entry in the database
+    * @param {Record<any, any>} data Input object to validate and save
+    * @returns {Promise<{ data: Record<any, any> }>} Created entry
+    * @throws {TypeError} If validation fails
+    */
     async create(data) {
         await this.ensureFileExists();
+        const Plugins = ["AutoHash"];
+        Plugins.forEach((Plugin) => {
+            const PluginData = plugins_1.PluginsData.get(Plugin);
+            const Keys = Object.keys(data);
+            const values = Object.values(data);
+            Keys.forEach((Key, Index) => {
+                if (PluginData.config[0].keywords.includes(Key)) {
+                    data[Key] = PluginData.run(values[Index]);
+                }
+            });
+        });
         const schema = this.buildJsonSchema();
         const validate = this.ajv.compile(schema);
         const mergedData = {
@@ -96,16 +110,17 @@ class AdvancedSchema {
         if (!valid)
             throw new TypeError(JSON.stringify(validate.errors, null, 2));
         const existingDataRaw = await promises_1.default.readFile(this.path, "utf-8");
+        console.log(existingDataRaw);
         const existingData = JSON.parse(existingDataRaw);
         const newId = this.generateId();
-        mergedData._dbid = newId;
+        mergedData._dbid = String(newId);
         existingData[newId] = mergedData;
         await promises_1.default.writeFile(this.path, JSON.stringify(existingData, null, 2), "utf-8");
         return { data: mergedData };
     }
     /**
      * Get all entries from the database
-     * @returns {Promise<Record<string, any>>} All entries without $schema
+     * @returns {Promise<SchemaDefinition<T>>} All entries without $schema
      */
     async get() {
         await this.ensureFileExists();
@@ -116,7 +131,7 @@ class AdvancedSchema {
     /**
      * Get entry by ID
      * @param {string} id Database ID
-     * @returns {Promise<Record<string, any> | null>} Entry or null if not found
+     * @returns {Promise<SchemaDefinition<T> | null>} Entry or null if not found
      */
     async getById(id) {
         await this.ensureFileExists();
@@ -125,8 +140,8 @@ class AdvancedSchema {
     }
     /**
      * Find entries that match a given key-value pair
-     * @param {Record<string, any>} query Object with a single key-value to match
-     * @returns {Promise<Record<string, any> | Record<string, any>[] | null>} Single entry object or array of entries
+     * @param {SchemaDefinition<T>} query Object with a single key-value to match
+     * @returns {Promise<SchemaDefinition<T> | SchemaDefinition<T>[] | null>} Single entry object or array of entries
      */
     async find(query) {
         await this.ensureFileExists();
@@ -142,15 +157,13 @@ class AdvancedSchema {
         }
         if (results.length === 0)
             return null;
-        if (results.length === 1)
-            return results[0];
         return results;
     }
     /**
      * Update an entry by ID
      * @param {string} id Database ID
-     * @param {Record<string, any>} updates Key-value pairs to update
-     * @returns {Promise<Record<string, any>>} Updated entry
+     * @param {Record<any, any>} updates Key-value pairs to update
+     * @returns {Promise<Record<any, any>>} Updated entry
      * @throws {TypeError} If ID not found or type mismatch
      */
     async update(id, updates) {
@@ -174,7 +187,7 @@ class AdvancedSchema {
     /**
      * Delete entry or field from database
      * @param {string} id Database ID
-     * @param {Record<string, any>} [field] Optional key-value pair to delete a specific field
+     * @param {Record<any, any>} [field] Optional key-value pair to delete a specific field
      * @returns {Promise<boolean>} True if deleted successfully
      * @throws {TypeError} If ID or field not found
      */
@@ -204,7 +217,7 @@ class AdvancedSchema {
      * @param {string} id Database ID
      * @param {string} key Array field key
      * @param {*} value Value to push into the array
-     * @returns {Promise<Record<string, any>>} Updated entry
+     * @returns {Promise<Record<any, any>>} Updated entry
      * @throws {TypeError} If entry, key, or array type is invalid
      */
     async push(id, key, value) {
@@ -222,6 +235,15 @@ class AdvancedSchema {
         data[id] = entry;
         await promises_1.default.writeFile(this.path, JSON.stringify(data, null, 2), "utf-8");
         return entry;
+    }
+    async toCsv() {
+        const filename = (0, path_1.basename)(this.path).replace(".json", ".csv");
+        const rawData = await promises_1.default.readFile(this.path, "utf-8");
+        const db = JSON.parse(rawData);
+        // ناخد القيم بس بدون الـ keys
+        const dataArray = Object.values(db);
+        // لو ExcellFile محتاج array من objects
+        (0, csv_1.ExcellFile)(filename, dataArray);
     }
 }
 exports.default = AdvancedSchema;

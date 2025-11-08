@@ -1,9 +1,9 @@
 import Ajv from "ajv";
-import { AdvancedSchemaOptions, Def } from "../../types/Schema";
+import { AdvancedSchemaOptions, Def, SchemaDefinition } from "../../../types/Schema";
 /**
  * AdvancedSchema - JSON Schema handler with validation and persistence
  */
-export default class AdvancedSchema {
+export default class AdvancedSchema<T extends SchemaDefinition<T>> {
     path: string;
     object: Def;
     ajv: Ajv;
@@ -30,57 +30,56 @@ export default class AdvancedSchema {
      */
     private ensureFileExists;
     /**
-     * Create a new entry in the database
-     * @param {Record<string, any>} data Input object to validate and save
-     * @returns {Promise<{ data: Record<string, any> }>} Created entry
-     * @throws {TypeError} If validation fails
-     */
-    create(data: Record<string, any>): Promise<{
-        data: {
-            [x: string]: unknown;
-        } & {};
+    * Create a new entry in the database
+    * @param {Record<any, any>} data Input object to validate and save
+    * @returns {Promise<{ data: Record<any, any> }>} Created entry
+    * @throws {TypeError} If validation fails
+    */
+    create(data: SchemaDefinition<T>): Promise<{
+        data: Record<any, any>;
     }>;
     /**
      * Get all entries from the database
-     * @returns {Promise<Record<string, any>>} All entries without $schema
+     * @returns {Promise<SchemaDefinition<T>>} All entries without $schema
      */
-    get(): Promise<Record<string, any>>;
+    get(): Promise<SchemaDefinition<T>>;
     /**
      * Get entry by ID
      * @param {string} id Database ID
-     * @returns {Promise<Record<string, any> | null>} Entry or null if not found
+     * @returns {Promise<SchemaDefinition<T> | null>} Entry or null if not found
      */
-    getById(id: string): Promise<Record<string, any> | null>;
+    getById(id: string): Promise<SchemaDefinition<T> | null>;
     /**
      * Find entries that match a given key-value pair
-     * @param {Record<string, any>} query Object with a single key-value to match
-     * @returns {Promise<Record<string, any> | Record<string, any>[] | null>} Single entry object or array of entries
+     * @param {SchemaDefinition<T>} query Object with a single key-value to match
+     * @returns {Promise<SchemaDefinition<T> | SchemaDefinition<T>[] | null>} Single entry object or array of entries
      */
-    find(query: Record<string, any>): Promise<Record<string, any> | Record<string, any>[] | null>;
+    find(query: SchemaDefinition<T>): Promise<Record<any, any>[] | null>;
     /**
      * Update an entry by ID
      * @param {string} id Database ID
-     * @param {Record<string, any>} updates Key-value pairs to update
-     * @returns {Promise<Record<string, any>>} Updated entry
+     * @param {Record<any, any>} updates Key-value pairs to update
+     * @returns {Promise<Record<any, any>>} Updated entry
      * @throws {TypeError} If ID not found or type mismatch
      */
-    update(id: string, updates: Record<string, any>): Promise<Record<string, any>>;
+    update(id: string, updates: Record<any, any>): Promise<Record<any, any>>;
     /**
      * Delete entry or field from database
      * @param {string} id Database ID
-     * @param {Record<string, any>} [field] Optional key-value pair to delete a specific field
+     * @param {Record<any, any>} [field] Optional key-value pair to delete a specific field
      * @returns {Promise<boolean>} True if deleted successfully
      * @throws {TypeError} If ID or field not found
      */
-    delete(id: string, field?: Record<string, any>): Promise<boolean>;
+    delete(id: string, field?: Record<any, any>): Promise<boolean>;
     /**
      * Push a value into an array field of an entry
      * @param {string} id Database ID
      * @param {string} key Array field key
      * @param {*} value Value to push into the array
-     * @returns {Promise<Record<string, any>>} Updated entry
+     * @returns {Promise<Record<any, any>>} Updated entry
      * @throws {TypeError} If entry, key, or array type is invalid
      */
-    push(id: string, key: string, value: any): Promise<Record<string, any>>;
+    push(id: string, key: string, value: any): Promise<Record<any, any>>;
+    toCsv(): Promise<void>;
 }
 //# sourceMappingURL=advanced.d.ts.map

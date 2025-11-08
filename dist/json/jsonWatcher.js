@@ -42,11 +42,9 @@ class JsonWatcher extends node_events_1.EventEmitter {
         this.lastSnapshot = {};
         this.readyPromise = this.initSnapshot();
     }
-    /** تنتظر snapshot الأولية */
     async waitReady() {
         await this.readyPromise;
     }
-    /** تهيئة snapshot أولية */
     async initSnapshot() {
         try {
             const result = this.db.fetchAll?.() || this.db.get?.();
@@ -56,7 +54,6 @@ class JsonWatcher extends node_events_1.EventEmitter {
             this.lastSnapshot = {};
         }
     }
-    /** جلب البيانات الحالية من الـDB */
     async fetchCurrent() {
         try {
             const result = this.db.fetchAll?.() || this.db.get?.();
@@ -66,7 +63,6 @@ class JsonWatcher extends node_events_1.EventEmitter {
             return {};
         }
     }
-    /** بدء المراقبة */
     start() {
         let path;
         if (typeof this.db.details === "function") {

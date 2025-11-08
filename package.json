@@ -1,6 +1,6 @@
 {
   "name": "multi.dbx",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
   "scripts": {
@@ -16,8 +16,7 @@
     "watcher",
     "eventemitter",
     "multidbx",
-    "multi.dbx",
-    "lightweight"
+    "multi.dbx"
   ],
   "author": "black.dev1",
   "license": "MIT",
@@ -35,6 +34,7 @@
   },
   "files": [
     "dist",
+    "types",
     "README.md",
     "LICENSE"
   ],
