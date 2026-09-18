@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
+    "moduleResolution": "node",
     "declaration": true,
     "outDir": "dist",
     "rootDir": "db",
@@ -10,12 +11,11 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
     "allowJs": true,
     "declarationMap": true,
     "checkJs": true,
     "sourceMap": true
   },
-  "include": ["db/**/*.ts"],
+  "include": ["db/**/*"],
   "exclude": ["dist", "node_modules", "db/types"]
 }
