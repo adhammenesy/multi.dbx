@@ -3,7 +3,9 @@ name: CI / Release & Publish
 on:
   push:
     branches:
-      - main  
+      - main
+    tags:
+      - 'v*'  # تشغيل الـ Action تلقائياً عند رفع Tag مثل v1.0.0
 
 jobs:
   release:
@@ -13,24 +15,32 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
 
-      - run: npm install
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Build Project (If defined)
+        run: npm run build --if-present
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: main-${{ github.run_number }}
-          name: "latest update"
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('v1.0.{0}', github.run_number) }}
+          name: ${{ github.ref_type == 'tag' && github.ref_name || format('Release v1.0.{0}', github.run_number) }}
           body: "Commit: ${{ github.sha }}"
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: npm publish --access public
+      - name: Publish to NPM
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
