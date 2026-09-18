@@ -1,6 +1,6 @@
 {
   "name": "multi.dbx",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Lightweight multi database with change watcher support.",
   "main": "dist/index.js",
   "scripts": {
